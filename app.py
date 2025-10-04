@@ -1,10 +1,9 @@
-# streamlit_app.py
 import streamlit as st
 import requests
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
 
-# RSS URL (tum badal sakte ho agar zarurat ho)
+# RSS URL
 RSS_URL = "https://style-threadz.myspreadshop.net/1482874/products.rss?pushState=false&targetPlatform=google"
 
 # Cache
@@ -26,14 +25,12 @@ def fetch_products_from_rss():
     products = []
     for item in root.findall('.//item'):
         title = item.findtext('title') or ''
-        link = item.findtext('link') or ''
         description = item.findtext('description') or ''
         price = item.findtext('{http://base.google.com/ns/1.0}price') or ''
         image = item.findtext('{http://base.google.com/ns/1.0}image_link') or ''
 
         prod = {
             'title': title.strip(),
-            'link': link.strip(),
             'description': description.strip(),
             'price': price.strip(),
             'image': image.strip()
@@ -61,12 +58,17 @@ try:
                 cols = st.columns([1, 3])
                 with cols[0]:
                     if prod['image']:
-                        st.image(prod['image'], width=150)
+                        # Image clickable → redirects to stylethreadz.com
+                        st.markdown(
+                            f'<a href="https://stylethreadz.com" target="_blank">'
+                            f'<img src="{prod["image"]}" width="150"></a>',
+                            unsafe_allow_html=True
+                        )
                 with cols[1]:
                     st.subheader(prod['title'])
                     st.markdown(f"**Price:** {prod['price']}")
                     st.markdown(prod['description'])
-                    st.markdown(f"[🔗 View Product]({prod['link']})")
+                    st.markdown(f"[🔗 View Product](https://stylethreadz.com)")
                 st.markdown("---")
 except Exception as e:
     st.error(f"Error loading products: {e}")
