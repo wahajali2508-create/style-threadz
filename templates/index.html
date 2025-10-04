@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Style-Threadz Products</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Style-Threadz Products</h1>
+    <p>Products loaded from Spreadshop RSS feed.</p>
+  </header>
+
+  {% if error %}
+    <div class="error">Error fetching feed: {{ error }}</div>
+  {% endif %}
+
+  <main id="product-grid">
+    {% if products %}
+      {% for p in products %}
+        <article class="product-card">
+          {% if p.image %}
+            <a href="{{ p.link }}" target="_blank" rel="noopener">
+              <img src="{{ p.image }}" alt="{{ p.title }}">
+            </a>
+          {% endif %}
+          <h2 class="prod-title"><a href="{{ p.link }}" target="_blank" rel="noopener">{{ p.title }}</a></h2>
+          {% if p.price %}<div class="price">{{ p.price }}</div>{% endif %}
+          <div class="desc">{{ p.description|safe }}</div>
+        </article>
+      {% endfor %}
+    {% else %}
+      <p>No products found.</p>
+    {% endif %}
+  </main>
+
+  <footer>
+    <small>Built to fetch: <code>{{ request.url_root }}</code></small>
+  </footer>
+</body>
+</html>
