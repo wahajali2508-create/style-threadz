@@ -14,7 +14,7 @@ def fetch_products_from_rss():
     products = []
     for item in root.findall('.//item'):
         title = item.findtext('title') or ''
-        link = item.findtext('link') or ''
+        link = item.findtext('link') or ''   # 🔹 Yehi link spreadshop ka hota hai
         price = item.findtext('{http://base.google.com/ns/1.0}price') or ''
         image = item.findtext('{http://base.google.com/ns/1.0}image_link') or ''
 
@@ -44,7 +44,7 @@ try:
             cols = st.columns(cols_per_row)
             for col, prod in zip(cols, products[i:i+cols_per_row]):
                 with col:
-                    # Product card
+                    # Product card with link redirect
                     st.markdown(
                         f"""
                         <div style="background-color:#1e1e1e;
@@ -57,6 +57,7 @@ try:
                                 <img src="{prod['image']}" style="width:100%; border-radius:8px;" />
                             </a>
                             <p style="font-weight:bold; margin:8px 0; color:white;">{prod['price']}</p>
+                            <a href="{prod['link']}" target="_blank" style="color:#00c0ff; text-decoration:none; font-weight:bold;">View Product</a>
                         </div>
                         """,
                         unsafe_allow_html=True
