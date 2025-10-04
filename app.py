@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 import xml.etree.ElementTree as ET
-import streamlit.components.v1 as components
 
 # RSS feed URL
 RSS_URL = "https://style-threadz.myspreadshop.net/1482874/products.rss?pushState=false&targetPlatform=google"
@@ -44,24 +43,10 @@ try:
             cols = st.columns(cols_per_row)
             for col, prod in zip(cols, products[i:i+cols_per_row]):
                 with col:
-                    html = f"""
-                    <div style="background:#fff; border:1px solid #ddd; border-radius:10px;
-                                padding:10px; text-align:center; margin-bottom:15px;">
-                        <a href="{prod['link']}" target="_blank" rel="noopener noreferrer">
-                            <img src="{prod['image']}" style="width:100%; border-radius:8px;" />
-                        </a>
-                        <h4 style="margin:8px 0; color:#333;">{prod['title']}</h4>
-                        <p style="font-weight:bold; color:green; margin:5px 0;">{prod['price']}</p>
-                        <a href="{prod['link']}" target="_blank" rel="noopener noreferrer"
-                           style="display:inline-block; padding:6px 12px; background:#00c0ff;
-                                  color:white; border-radius:5px; text-decoration:none; font-weight:bold;">
-                           View Product
-                        </a>
-                    </div>
-                    """
-                    # ✅ Force render via components (Streamlit won’t block link)
-                    components.html(html, height=350)
+                    st.image(prod["image"], use_container_width=True)
+                    st.subheader(prod["title"])
+                    st.write(f"**Price:** {prod['price']}")
+                    # ✅ Direct clickable link under each product
+                    st.markdown(f"[👉 View Product]({prod['link']})", unsafe_allow_html=True)
 except Exception as e:
     st.error(f"Error loading products: {e}")
-
-
